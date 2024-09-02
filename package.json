@@ -1,0 +1,27 @@
+{
+  "name": "prok-c",
+  "version": "0.0.1",
+  "main": "Prok-C.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Zack's Mohawk Limited",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.19.2",
+    "fs": "^0.0.1-security",
+    "https": "^1.0.0",
+    "properties-reader": "^2.3.0",
+    "request": "^2.88.2"
+  },
+  "description": "Generic proxy application",
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ZacksMohawk/Prok-C.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ZacksMohawk/Prok-C/issues"
+  },
+  "homepage": "https://github.com/ZacksMohawk/Prok-C#readme"
+}
