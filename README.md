@@ -19,11 +19,15 @@ In the Prok-C folder, run the following:
 
 	node Prok-C
 
-This will run on default port 999, unless config says otherwise.
+This will run on default port 999, unless config or command line param says otherwise.
 
 To use a different config file:
 
 	node Prok-C -configPath /path/to/config/file
+
+To use a different port (eg. 777):
+
+	node Prok-C -port 777
 
 ## How To Use
 
@@ -34,4 +38,4 @@ To proxy a GET request, to https://test-site.com/pages/1 for example, send a req
 
 You will then the receive the response as though it originated via the Prok-C application.
 
-POST requests will soon be supported also.
+Proxying POST requests also requires the target and key to be set, and this will effectively forward the JSON body of your POST request, before returning the response.
