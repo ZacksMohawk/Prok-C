@@ -52,7 +52,33 @@ function sendPostBodyRequest(req, res, url, postBody, successFunction, failFunct
 	);
 }
 
+function sendGetRequest(url, headers, successFunction, failFunction, noResponseFunction){
+	request.get(
+		url,
+		{
+			headers: headers
+		},
+		function (error, response, body) {
+			if (response){
+				if (response.statusCode == 200){
+					// execute the provided success function
+					successFunction(body);
+				}
+				else {
+					// execute fail function
+					failFunction(response.statusCode);
+				}
+			}
+			else {
+				// execute no response function
+				noResponseFunction();
+			}
+		}
+	);
+}
+
 module.exports = {
 	sendPostFormRequest: sendPostFormRequest,
-	sendPostBodyRequest: sendPostBodyRequest
+	sendPostBodyRequest: sendPostBodyRequest,
+	sendGetRequest: sendGetRequest
 }

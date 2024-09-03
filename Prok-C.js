@@ -2,7 +2,6 @@ const fs = require('fs');
 const express = require('express');
 const PropertiesReader = require('properties-reader');
 const https = require('https');
-const request = require('request');
 const bodyParser = require('body-parser');
 const app = express();
 const Logger = require('./includes/Logger');
@@ -14,7 +13,7 @@ const RequestUtils = require('./includes/RequestUtils');
  */
 
 global.appType = "PRKC";
-global.version = "0.0.2";
+global.version = "0.0.3";
 global.port = 999;
 
 Logger.log();
@@ -87,21 +86,29 @@ app.get('/*', function (req, res) {
 	delete req.headers['target'];
 	delete req.headers['host'];
 
-	let options = {
-		'uri': fullURL,
-		'headers': req.headers,
-		'method': req.method
-	}
-
-	request(options, function(error, response, body){
-		if (error){
+	RequestUtils.sendGetRequest(fullURL, req.headers,
+		// successFunction
+		function(body){
 			if (debugMode) {
-				Logger.log("GET proxy request unable to connect to: " + fullURL);
+				Logger.log("[Debug] Successful GET proxy attempt for: " + fullURL);
 			}
-			res.status(521).send("SERVER DOWN");
-			return;
+			res.status(200).send(body);
+		},
+		// failFunction
+		function(statusCode){
+			if (debugMode) {
+				Logger.log("[Debug] Failed GET proxy attempt (" + statusCode + ") for: " + fullURL);
+			}
+			res.status(statusCode).send("ERROR");
+		},
+		// noResponseFunction
+		function(){
+			if (debugMode) {
+				Logger.log("[Debug] Failed GET proxy attempt (521) for: " + fullURL);
+			}
+			res.status(521).send("ERROR");
 		}
-	}).pipe(res);
+	);
 });
 
 app.post('/*', function (req, res) {
