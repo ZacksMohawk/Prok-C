@@ -11,7 +11,7 @@ This application is a very basic generic proxy service.
 
 ## How To Configure
 
-Please set the values in the config.ini file, or create a brand new config file and pass in its path as -configPath value. If you do not set SSL values, the server with default to HTTP.
+Please set the values in the config.ini file, or create a brand new config file and pass in its path as -configPath value. If you do not set SSL values, the server will default to HTTP.
 
 ## How To Run
 
