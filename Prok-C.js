@@ -3,8 +3,10 @@ const express = require('express');
 const PropertiesReader = require('properties-reader');
 const https = require('https');
 const request = require('request');
+const bodyParser = require('body-parser');
 const app = express();
 const Logger = require('./includes/Logger');
+const RequestUtils = require('./includes/RequestUtils');
 
 
 /**
@@ -12,7 +14,7 @@ const Logger = require('./includes/Logger');
  */
 
 global.appType = "PRKC";
-global.version = "0.0.1";
+global.version = "0.0.2";
 global.port = 999;
 
 Logger.log();
@@ -34,6 +36,12 @@ else {
 // properties
 let properties = PropertiesReader(configPath);
 global.debugMode = properties.get('main.debug.mode');
+if (properties.get('main.port')){
+	global.port = properties.get('main.port');
+}
+if (process.argv.indexOf("-port") != -1){
+    global.port = process.argv[process.argv.indexOf("-port") + 1];
+}
 let apiKey = properties.get('auth.api.key');
 let privateKey, certificate, credentials = null;
 let selfSignedAllowed = false;
@@ -51,28 +59,25 @@ if (properties.get('ssl.private.key') && properties.get('ssl.certificate')){
 }
 let homepageText = properties.get('page.home.text') + version;
 
+app.use(bodyParser.urlencoded({
+	extended: false
+}));
+app.use(bodyParser.json());
+
 
 /**
  * API Endpoints
  */
 
-// homepage
-app.get('/', function (req, res) {
-	if (debugMode) {
-		Logger.log("[Debug] Homepage request");
-	}
-	res.send(homepageText);
-});
-
-// get
 app.get('/*', function (req, res) {
-	if (!checkAuth(req, res)){
-		return;
-	}
 
 	let target = req.header('target');
 	if (!target){
-		res.status(400).send("BAD REQUEST");
+		res.status(200).send(homepageText);
+		return;
+	}
+
+	if (!checkAuth(req, res)){
 		return;
 	}
 
@@ -97,6 +102,52 @@ app.get('/*', function (req, res) {
 			return;
 		}
 	}).pipe(res);
+});
+
+app.post('/*', function (req, res) {
+
+	let target = req.header('target');
+	if (!target){
+		res.status(400).send("BAD REQUEST");
+		return;
+	}
+	
+	if (!checkAuth(req, res)){
+		return;
+	}
+
+	let fullURL = target + req.url;
+
+	delete req.headers['key'];
+	delete req.headers['target'];
+	delete req.headers['host'];
+	delete req.headers['content-length'];
+
+	RequestUtils.sendPostBodyRequest(req, res, fullURL,
+		// postBody
+		req.body, 
+		// successFunction
+		function(body){
+			if (debugMode) {
+				Logger.log("[Debug] Successful POST proxy attempt for: " + fullURL);
+			}
+			res.status(200).send(body);
+		},
+		// failFunction
+		function(statusCode){
+			if (debugMode) {
+				Logger.log("[Debug] Failed POST proxy attempt (" + statusCode + ") for: " + fullURL);
+			}
+			res.status(statusCode).send("ERROR");
+		},
+		// noResponseFunction
+		function(){
+			if (debugMode) {
+				Logger.log("[Debug] Failed POST proxy attempt (521) for: " + fullURL);
+			}
+			res.status(521).send("ERROR");
+		}
+	);
 });
 
 function checkAuth(req, res){
