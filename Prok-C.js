@@ -13,14 +13,8 @@ const RequestUtils = require('./includes/RequestUtils');
  */
 
 global.appType = "PRKC";
-global.version = "0.0.3";
+global.version = "0.0.4";
 global.port = 999;
-
-Logger.log();
-Logger.log(fs.readFileSync('AppLogo.txt', 'utf8'));
-Logger.log();
-Logger.log('Prok-C v' + version);
-Logger.log();
 
 // command line params
 let configPath;
@@ -57,6 +51,12 @@ if (properties.get('ssl.private.key') && properties.get('ssl.certificate')){
 	}
 }
 let homepageText = properties.get('page.home.text') + version;
+
+Logger.log();
+Logger.log(fs.readFileSync('AppLogo.txt', 'utf8'));
+Logger.log();
+Logger.log('Prok-C v' + version);
+Logger.log();
 
 app.use(bodyParser.urlencoded({
 	extended: false
