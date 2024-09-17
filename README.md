@@ -15,7 +15,7 @@ In the Prok-C folder, run the following:
 
 	node Prok-C
 
-This will run on default port 8888 with default API key 'testing', unless environment, config or command line param says otherwise.
+This will run on default port 8888 with default API key 'my_api_key', unless environment, config or command line param says otherwise.
 
 ## How To Configure
 
@@ -40,16 +40,16 @@ And this can be overruled by a command line param:
 
 To set API key value as an Environment Variable:
 
-	PROKC_API_KEY=testing
+	PROKC_API_KEY=my_api_key
 
 This can be overruled by an entry in the config.ini file:
 
 	[auth]
-	api.key=testing
+	api.key=my_api_key
 
 And this can be overruled by a command line param:
 
-	node Prok-C -key testing
+	node Prok-C -key my_api_key
 
 ## How To Use
 

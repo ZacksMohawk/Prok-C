@@ -13,7 +13,7 @@ const RequestUtils = require('./includes/RequestUtils');
  */
 
 global.appType = "PRKC";
-global.version = "0.0.6";
+global.version = "0.0.7";
 global.port = 8888;
 
 // command line params
@@ -41,7 +41,7 @@ else if (process.env.PROKC_PORT){
 	Logger.log("Port value set from Environment Variables");
 	global.port = process.env.PROKC_PORT;
 }
-let apiKey = "testing";
+let apiKey = "my_api_key";
 if (process.argv.indexOf("-key") != -1){
 	Logger.log("API Key value set from command line parameters");
     apiKey = process.argv[process.argv.indexOf("-key") + 1];
