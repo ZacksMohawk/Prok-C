@@ -9,29 +9,51 @@ This application is a very basic generic proxy service.
 
 	npm install
 
-## How To Configure
-
-Please set the values in the config.ini file, or create a brand new config file and pass in its path as -configPath value. If you do not set SSL values, the server will default to HTTP.
-
 ## How To Run
 
 In the Prok-C folder, run the following:
 
 	node Prok-C
 
-This will run on default port 999, unless config or command line param says otherwise.
+This will run on default port 8888 with default API key 'testing', unless environment, config or command line param says otherwise.
+
+## How To Configure
+
+Please set the values in the config.ini file, or create a brand new config file and pass in its path as -configPath value. If you do not set SSL values, the server will default to HTTP.
 
 To use a different config file:
 
 	node Prok-C -configPath /path/to/config/file
 
-To use a different port (eg. 777):
+To set port value as an Environment Variable:
 
-	node Prok-C -port 777
+	PROKC_PORT=8888
+
+This can be overruled by an entry in the config.ini file:
+
+	[main]
+	port=8888
+
+And this can be overruled by a command line param:
+
+	node Prok-C -port 8888
+
+To set API key value as an Environment Variable:
+
+	PROKC_API_KEY=testing
+
+This can be overruled by an entry in the config.ini file:
+
+	[auth]
+	api.key=testing
+
+And this can be overruled by a command line param:
+
+	node Prok-C -key testing
 
 ## How To Use
 
-To proxy a GET request, to https://test-site.com/pages/1 for example, send a request to https://localhost:999/pages/1 and include the following values as headers:
+To proxy a GET request, to https://test-site.com/pages/1 for example, send a request to https://localhost:8888/pages/1 and include the following values as headers:
 
 	target: https://test-site.com
 	key: {your api.key as set in config.ini}

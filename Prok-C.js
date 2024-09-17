@@ -13,8 +13,8 @@ const RequestUtils = require('./includes/RequestUtils');
  */
 
 global.appType = "PRKC";
-global.version = "0.0.4";
-global.port = 999;
+global.version = "0.0.5";
+global.port = 8888;
 
 // command line params
 let configPath;
@@ -29,13 +29,31 @@ else {
 // properties
 let properties = PropertiesReader(configPath);
 global.debugMode = properties.get('main.debug.mode');
-if (properties.get('main.port')){
-	global.port = properties.get('main.port');
-}
 if (process.argv.indexOf("-port") != -1){
+	Logger.log("Port value set from command line parameters");
     global.port = process.argv[process.argv.indexOf("-port") + 1];
 }
-let apiKey = properties.get('auth.api.key');
+else if (properties.get('main.port')){
+	Logger.log("Port value set from config");
+	global.port = properties.get('main.port');
+}
+else if (process.env.PROKC_PORT){
+	Logger.log("Port value set from Environment Variables");
+	global.port = process.env.PROKC_PORT;
+}
+let apiKey = "testing";
+if (process.argv.indexOf("-key") != -1){
+	Logger.log("API Key value set from command line parameters");
+    apiKey = process.argv[process.argv.indexOf("-key") + 1];
+}
+else if (properties.get('auth.api.key')){
+	Logger.log("API Key value set from config");
+	apiKey = properties.get('auth.api.key');
+}
+else if (process.env.PROKC_API_KEY){
+	Logger.log("API Key value set from Environment Variables");
+	apiKey = process.env.PROKC_API_KEY;
+}
 let privateKey, certificate, credentials = null;
 let selfSignedAllowed = false;
 if (properties.get('ssl.private.key') && properties.get('ssl.certificate')){
