@@ -13,7 +13,7 @@ const RequestUtils = require('./includes/RequestUtils');
  */
 
 global.appType = "PRKC";
-global.version = "0.0.5";
+global.version = "0.0.6";
 global.port = 8888;
 
 // command line params
@@ -103,6 +103,9 @@ app.get('/*', function (req, res) {
 	delete req.headers['key'];
 	delete req.headers['target'];
 	delete req.headers['host'];
+	if (req.headers['accept-encoding'] && req.headers['accept-encoding'].includes("gzip")){
+		req.headers['accept-encoding'] = "*";
+	}
 
 	RequestUtils.sendGetRequest(fullURL, req.headers,
 		// successFunction
@@ -147,6 +150,9 @@ app.post('/*', function (req, res) {
 	delete req.headers['target'];
 	delete req.headers['host'];
 	delete req.headers['content-length'];
+	if (req.headers['accept-encoding'] && req.headers['accept-encoding'].includes("gzip")){
+		req.headers['accept-encoding'] = "*";
+	}
 
 	RequestUtils.sendPostBodyRequest(req, res, fullURL,
 		// postBody
